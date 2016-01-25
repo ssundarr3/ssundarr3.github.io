@@ -1,0 +1,171 @@
+@import url(https://fonts.googleapis.com/css?family=Muli:400,300);
+
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,
+form,fieldset,input,textarea,p,blockquote,th,td {
+    padding: 0;
+    margin: 0;
+}
+body{
+  	font-family: 'Muli', sans-serif;
+}
+
+h1{
+	font-family: 'Muli', sans-serif;	
+	text-decoration: none;
+	font-weight: 300;	
+	font-size: 5em;
+}
+
+a{	
+	text-decoration: none;
+	-o-transition:.5s;
+ 	-ms-transition:.5s;
+ 	-moz-transition:.5s;
+ 	-webkit-transition:.5s;
+	transition:.5s;
+}
+p{
+	text-align: center;
+	font-size: 2em;
+	text-align: center;
+
+}
+.fp-slidesNav.bottom{
+		bottom: 25px;
+}
+#section0{
+	color: #c7ad88;
+}
+#section1{
+	color: #000000;
+}
+#section1 a, #section1 a:visited{
+	color:#FFFFFF;
+}
+#section1 a:hover{
+	color:#000000;
+	text-decoration: none;
+	border-bottom: 1px #000000 dotted;
+}
+#section2{
+	color: #733327;
+}
+#section2 a, #section2 a:visited{
+	font-size: 1.4em;
+	color: #FFFFFF;
+}
+#section2 a:hover, #section2 a:active{
+	font-size: 1.6em;
+	color: #4c0c00;
+}
+.slide h1{
+	
+}
+/*#section2{
+	background: -webkit-gradient(linear, top left, bottom left, from(#c7ad88), to(#d6ae7b));
+	background: -webkit-linear-gradient(#c7ad88, #d6ae7b);
+	background: linear-gradient(#c7ad88,#d6ae7b);
+}*/
+#section3{
+	color: #6c2c20;
+	margin-bottom: 5vh;
+	background: -webkit-gradient(linear, top left, bottom left, from(#c7ad88), to(#eacda3));
+	background: -webkit-linear-gradient(#c7ad88, #eacda3);
+	background: linear-gradient(#c7ad88,#eacda3);
+}
+
+#github_link:hover, #github_link:active{
+	color: #4c0c00;
+	/*color: #000000;*/
+}
+#linkedin_link:hover, #linkedin_link:active{
+	color: #4c0c00;
+	/*color: #0177B5;*/
+}
+#email_link:hover, #email_link:active{
+	color: #4c0c00;
+	/*color: #E92706;*/
+}
+#section3 a, #section3:visited{
+	color: #935347;
+}
+.footer_links{
+	margin-top: 15vh;
+	margin-bottom: 15vh;
+	opacity: 0.09;
+	margin-left: 10vh;	
+	margin-bottom: 5vh;
+	text-decoration: none;
+	font-size: 1.8em;	
+}
+.footer_links:active, .footer_links:hover{
+	opacity: 100;
+    filter: alpha(opacity=100); 
+    text-align: center;
+}
+#send_message{
+	font-size: 1.4em;
+}
+#send_message a:hover, #send_message a:active{
+	color:#4c0c00;
+	font-size: 1.01em;
+	text-decoration: none;
+	border-bottom: 1px #4c0c00 dotted;
+}
+#profile_pic{
+	max-height: 20vh;
+	border-radius: 1000px;
+}
+.section{
+	text-align:center;
+}
+#boost a:hover, #boost a:active{
+	font-size: 1.3em;
+	color: #4c0c00;
+}
+
+#credits{
+	font-size:  .8em;
+}
+.onlyMobileShow{
+	display: none;
+}
+.noMobileShow{
+	display: inline;
+}
+
+@media only screen and (max-device-width: 1000px) {
+	h1{
+		padding-left: 3vh;
+		padding-right: 3vh;
+		font-size: 6em;
+	}
+	p{
+		padding: 3vh;
+		font-size: 3.5em;
+	}
+	#boost{
+		vertical-align: cente
+		font-size: 2.5em;
+	}
+	#send_message{
+		font-size: 3em;
+	}
+	.noMobileShow{
+		display: none;
+	}
+	.onlyMobileShow{
+		display: inline;
+	}
+	.footer_links{
+		margin-top: 5vh;
+		margin-bottom: 5vh;
+		opacity: 0.6;
+		margin-left: 4vh;	
+		margin-bottom: 3vh;
+		text-decoration: none;	
+	}
+	#linkedin_link{
+		padding-left: 6vh;
+	}
+}

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="./assets/css/jquery.fullPage.css" />
+	<link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+
+
+	<script type="text/javascript" src="./assets/js/jquery.fullPage.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#fullpage').fullpage({
+				anchors: ['home', 'about', 'projects', 'contact'],
+				sectionsColor: ['#935347', '#64706c', '#c7ad88', '#FFFFFF'],
+				navigation: true,
+				navigationPosition: 'right',
+				navigationTooltips: ['Home', 'About', 'Projects', 'Contact']
+			});
+		});
+	</script>
+	<title>Shridhar Sundarraj</title>
+</head>
+<body>
+<div id="fullpage">
+	<div class="section " id="section0">
+		<div class="intro">
+			<img id="profile_pic" src="./assets/images/titleimage.jpg" />
+			<h1>Hello, I'm Shridhar</h1>
+		</div>
+
+	</div>
+	<div class="section" id="section1">
+		<div class="about">
+			<h1>About</h1><br><br>
+			<p>
+				Hi there, I'm a Computer Science Student in my 1B term<br>at the 
+		        <a href="https://uwaterloo.ca/" class="text_link">University of Waterloo</a>
+		        Ontario, Canada. 
+		        <br>
+		        <br>
+		        I love to code, and I work on small projects in my spare time. 
+		        <br>I also like solving interesting math problems, and<br>watching thought provoking videos.
+		        <br><br>
+		        Apart from this, I sing 
+		        <a href="https://en.wikipedia.org/wiki/Carnatic_music" class="text_link">Indian carnatic music</a> 
+		        and<br>play chess and soccer on occasion.
+		    </p>
+		</div>
+	</div>
+	<div class="section" id="section2">
+	    <div class="slide" id="slide1">
+			<div class="intro">
+				<h1>Projects</h1>
+				<p class="onlyMobileShow">
+					Swipe to navigate
+				</p>
+				<p class="noMobileShow">
+					Use <i class="fa fa-arrow-left"></i> and <i class="fa fa-arrow-right"></i> arrow keys to navigate.
+				</p>
+			</div>
+		</div>
+
+	    <div class="slide" id="slide2">
+			<h1>Tic-Tac-Toe</h1>
+			<p>
+				A computer vs human Tic-Tac-Toe game in Racket<br>that never loses.
+			</p>
+			<p>
+				<a href="https://github.com/ssundarr3/TicTacToe-Rakcet" class="fa fa-github fa-2x">
+				</a>
+			</p>
+
+		</div>
+		<div class="slide" id="slide3">
+			<h1>Youtube -DL</h1>
+			<p>
+				A Python script that downloads YouTube videos.<br>
+				It supports playlist download and multiple video formats. 
+				<br>
+				<a href="https://github.com/ssundarr3/YouTube-DL" class="fa fa-github fa-2x"></a>
+			</p>
+		</div>
+		<div class="slide" id="slide4">
+			<h1>RSA Encryptor</h1>
+			<p>
+				A Racket program that encrypts/decrypts strings of<br>text/numbers using RSA Cryptography.
+				<br>
+				<a href="https://github.com/ssundarr3/RSA-Encryptor" class="fa fa-github fa-2x"></a>
+			</p>
+		</div>
+		<div class="slide" id="slide5">
+			<h1>Other Projects</h1>
+			<p>
+				I love working on new and interesting projects!
+				<br>
+				Check them out !!
+				<br>
+				<a href="https://github.com/ssundarr3" class="fa fa-github fa-2x"></a>
+			</p>
+		</div>
+	</div>
+	<div class="section" id="section3">
+		<div class="intro">
+			<br><br>
+			<h1>Contact</h1>
+			<p>If you would like to work together, or simply say hi,<br>feel free to send me a message.</p><br>
+			<p id="send_message">
+				<a href="mailto:ssundarr@uwaterloo.ca" class="text_link">
+					<i class="fa fa-paper-plane-o fa-2x"></i><br>Send me a message!<br>(ssundarr@uwaterloo.ca)
+				</a>
+   			 </p>
+
+   			 <p>
+		        <a href="My linked in page!!" id="linkedin_link" class="footer_links fa fa-linkedin">
+		        </a>
+		        <a href="https://github.com/ssundarr3" id="github_link" class="footer_links fa fa-github">
+		        </a>
+		        <a href="mailto:ssundarr@uwaterloo.ca" id="email_link" class="footer_links fa fa-envelope-o" style="margin-right:10vh;">
+		        </a>
+		       
+		        <!-- <a href="My linked in page!!" class="footer_text">
+		          <span id="linkedin_text"> Linkedin</span>
+		        </a>
+		        <a href="https://github.com/ssundarr3" class="footer_text">
+		          <span id="github_text">GitHub</span>
+		        </a>
+		        <a href="mailto:ssundarr@uwaterloo.ca" class="footer_text">
+		          <span id="email_text">Email</span>
+		        </a> -->
+   			 </p>
+   			  <br><br><br><br>
+   			 <p id="boost">
+   			 	<i id="boost" class="fa fa-space-shuttle fa-rotate-270"></i></a>
+   			 </p>
+
+   			<!-- <span id="credits">	
+   				Made by Shridhar Sundarraj using HTML, CSS, fontawesome and slimScroll.
+   			</span> -->
+		</div>
+	</div>
+</div>
+</body>
+</html>
