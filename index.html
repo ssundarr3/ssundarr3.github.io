@@ -2,15 +2,20 @@
 <html lang="en">
 
 <head>
+	<script type='application/javascript' src='/assets/js/fastclick.js'></script>
+	<script type='application/javascript'>
+		if ('addEventListener' in document) {
+    			document.addEventListener('DOMContentLoaded', function() {
+		    FastClick.attach(document.body);
+		  }, false);
+		}
+	</script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="./assets/css/jquery.fullPage.css" />
 	<link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
-
-
 	<script type="text/javascript" src="./assets/js/jquery.fullPage.js"></script>
-
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('#fullpage').fullpage({
