@@ -9,6 +9,16 @@ body{
   	font-family: 'Muli', sans-serif;
 }
 
+video{
+	position: fixed;
+    opacity: 50%;
+    min-height: 100%;
+    z-index: -100;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+
 h1{
 	font-family: 'Muli', sans-serif;	
 	text-decoration: none;
@@ -58,6 +68,8 @@ p{
 	font-size: 1.6em;
 	color: #4c0c00;
 }
+
+
 .slide h1{
 	
 }
@@ -135,6 +147,10 @@ p{
 }
 
 @media only screen and (max-device-width: 1000px) {
+	video{
+		max-height: 10%;
+		max-width: 10%;
+	}
 	h1{
 		padding-left: 3vh;
 		padding-right: 3vh;
@@ -169,3 +185,4 @@ p{
 		padding-left: 6vh;
 	}
 }
+
