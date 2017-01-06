@@ -1,0 +1,207 @@
+  <html>
+  <head>
+    <title>TTT</title>
+    <meta charset="UTF-8">
+    <!-- So that content is squeezed in to width of 500 px on 
+    mobile devices...
+    Change to proper width later... 
+    ALSO MAYBE ADD FAST CLICK FOR MOBILE...-->
+    <meta name=viewport content='width=401'>
+    <style type="text/css">
+      html, body, div, span, h1, h2, h3, h4, h5, h6, p, canvas{
+        margin: 0;
+        padding: 0;
+        border: 0;
+        vertical-align: center;
+        text-align: center;
+      }
+      body{
+        line-height: 1;
+      }
+      html{
+        background-color: #935347;
+      }
+      #TTT{
+        display: block;
+        position: absolute;
+        top:0;
+        bottom: 0;
+        left: 0;
+        right: 0 ;
+        margin:auto;/*
+        border: 1px solid #FFFF00;
+        width: 200;
+        height: 200;*/
+      }
+    </style>
+    <script type="text/javascript">
+      var canvas;
+      var ctx;
+      var x = 399;
+      var y = 399;
+      var lineWidth = 25;
+      var board = [];
+      var isOver = false;
+      function main(){
+        board.push("X");
+        console.log(board);
+        drawBoard();
+        // while(!gameOver()){
+        //   console.log("Game not over");
+        // }
+        console.log("Now, Game over...");
+      }
+
+      function drawBoard(){
+        canvas = document.getElementById("TTT");
+        canvas.addEventListener("mousedown", getPosition, false);
+        ctx = canvas.getContext("2d");
+
+        // Filling Rect
+        ctx.fillStyle = "#C7AD88"
+        ctx.fillRect(0,0,x,y)
+
+
+        ctx.lineWidth = lineWidth;
+        ctx.strokeStyle = '#935347';  // #64706C
+
+        // For rounded ends... If required...
+        // ctx.lineCap = 'round';
+
+        for(var i=0; i<4; i++){
+          // Frist Line
+          ctx.beginPath();
+          ctx.moveTo(i*(x/3), 0);
+          ctx.lineTo(i*(x/3), y);
+          ctx.stroke();
+
+          // Second Line
+          ctx.beginPath();
+          ctx.moveTo(0, i*(y/3));
+          ctx.lineTo(x, i*(y/3));
+          ctx.stroke();
+        }
+      }
+
+      function getPosition(event){
+        var xCor = new Number();
+        var yCor = new Number();
+        var canvas = document.getElementById("TTT");
+
+        if (event.x != undefined && event.y != undefined)
+        {
+          xCor = event.x;
+          yCor = event.y;
+        }
+        else // Firefox method to get the position
+        {
+          xCor = event.clientX + document.body.scrollLeft +
+              document.documentElement.scrollLeft;
+          yCor = event.clientY + document.body.scrollTop +
+              document.documentElement.scrollTop;
+        }
+
+        xCor -= canvas.offsetLeft;
+        yCor -= canvas.offsetTop;
+
+        // console.log("x: " + xCor + "  y: " + yCor);
+        getSquare(xCor, yCor);
+      }
+
+      function getSquare(xCor, yCor){
+        var row = new Number();
+        var col = new Number();
+        if(xCor < (x/3)-(lineWidth/2)+1)
+          col = 1;
+        else if(xCor < (2*(x/3)-(lineWidth/2)+1))
+          col = 2; 
+        else
+          col = 3
+
+        if(yCor < (x/3)-(lineWidth/2)+1)
+          row = 1
+        else if(yCor < (2*(x/3)-(lineWidth/2)+1))
+          row = 2;
+        else
+          row = 3;  
+        console.log("COL: " + col + " ROW: " + row + " NUMBER: " + (((row-1)*3)+col));
+        drawOnSquare(row, col);
+      }
+
+      function drawOnSquare(row, col){
+        if(board[((((row-1)*3)+col))] != undefined || isOver){
+          console.log("Already Clicked... or game over...")
+          return;
+        }
+        board[((((row-1)*3)+col))] = board[0];
+
+        // should ideally be some function of lineWidth??
+        var fixedValue = lineWidth + 15;
+        if (board[0] == "X"){
+           // DRAW X
+          ctx.beginPath();
+          ctx.moveTo((x/3)*(col-1)+fixedValue, (y/3)*(row-1)+fixedValue);
+          ctx.lineTo((x/3)*(col)-fixedValue, (y/3)*(row)-fixedValue);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo((x/3)*(col-1)+fixedValue, (y/3)*(row)-fixedValue);
+          ctx.lineTo((x/3)*(col)-fixedValue, (y/3)*(row-1)+fixedValue);
+          ctx.stroke();
+        }
+        else{
+          // DRAW O
+          var CircleX = ((x/3)*(col-1)+fixedValue+(x/3)*(col)-fixedValue)/2;
+          var CircleY = ((y/3)*(row)-fixedValue+(y/3)*(row-1)+fixedValue)/2;
+          var CircleR = ((y/3)*(row)-fixedValue-((y/3)*(row-1)+fixedValue))/2;
+          console.log(CircleX)
+          ctx.beginPath();
+          ctx.arc(CircleX, CircleY, CircleR,0, 2*Math.PI);
+          ctx.stroke();
+        }
+        board[0] = (board[0] == "X") ? "O" : "X";
+        console.log(board);
+        isOver = gameOver();
+      }
+
+      function gameOver(){
+        // you can't win without at least 5 marks on the board... 
+        // but since there is an extra character the board array
+        // CHANGE???
+        // less than 6 because there is an extra element at the beginning...
+        if(board.length < 6){
+          return false;
+        }
+        for(var i=1; i<4; i++){
+          if(board[i] != undefined && board[i] == board[i+3] && board[i+3] == board[i+6]){
+            return true;
+          }
+          if(board[3*i-2] != undefined && board[3*i-2] == board[3*i-1] && board[3*i-1] == board[3*i]){
+            return true;
+          }
+        }
+        if(board[1] != undefined && board[1] == board[5] && board[5] == board[9]){
+          return true;
+        }
+        if(board[3] != undefined && board[3] == board[5] && board[5] == board[7]){
+          return true;
+        }
+        else{
+          return false;
+        }
+      }
+
+
+    </script>
+  </head>
+  <body onload="main()">
+    <div>
+      <h1>Tic Tac Toe</h1>
+      <p></p>
+    </div>
+    <canvas id="TTT" width="399" height="399">Your browser doesn't support canvas...</canvas>
+    <div>
+      <p></p>
+    </div>
+  </body>
+</html>

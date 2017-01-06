@@ -1,0 +1,21 @@
+<html>
+<head>
+	<title>Match</title>
+	<meta charset="UTF-8">
+	<meta name=viewport content='width=401'>
+	<script type='application/javascript' src='./js/fastclick.js'></script>
+	<script type="application/javascript">
+		window.addEventListener('load', function () {
+			FastClick.attach(document.body);
+		}, false);
+	</script> 
+	<link rel="stylesheet" type="text/css" href="./css/main.css">
+	<script src='./js/match.js'></script>
+	<script src="./js/options.js"></script>
+</head>
+<body onload="main()"> 
+<h1 class="noSelect" unselectable="on">Match them up</h1>
+<p class="noSelect" id="text"></p>
+<div id="tilesWrap"></div>
+</body>
+</html>

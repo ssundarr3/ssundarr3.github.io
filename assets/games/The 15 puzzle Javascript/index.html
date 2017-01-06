@@ -1,0 +1,44 @@
+<html>
+<head>
+	<title>The 15 Puzzle</title>
+	<meta charset="UTF-8">
+	<meta name=viewport content='width=401'>
+	<script type='application/javascript' src='./js/fastclick.js'></script>
+	<script type="application/javascript">
+		window.addEventListener('load', function () {
+			FastClick.attach(document.body);
+		}, false);
+	</script>
+	<link rel="stylesheet" type="text/css" href="./css/main.css">
+	<script src='./js/fifteenPuzzle.js'></script>
+</head>
+<body onload="main()"> 
+<h1 class="noSelect" unselectable="on">The 15 Puzzle</h1>
+<!-- <button class="noSelect" id="text">Some text here...</button> -->
+<button onclick="shuffle()" class="button" id="shuffle">Shuffle</button>
+<button onclick="reset()" class="button" id="reset">Reset</button>
+<!-- <button onclick="impossible()" class="button" id="impossible">IMPOSSIBLE MODE</button>
+ --><button onclick="options()" class="button" id="options">OPTIONS!</button>
+<button onclick="help()" class="button" id="help">Help</button>
+<div id="tilesWrap"></div>
+
+<div id="modal" style=" display: none">
+	<div id="header">
+	Enter Information
+	</div>
+	<div id="information">
+
+
+	<form id="optionsForm">
+		Number of Rows: <input type="number" value="6" min="2" max="20">
+		Number of Columns: <input type="number" value="6" min="2" max="20">
+		Gap (distance b/w blocks): <input type="number" value="4" min="0" max="20">
+		Image: <input type="file" name="pic" accept="image/*">
+	</form>
+	<button onclick="submit()">Submit</button>
+
+	</div>
+</div>
+
+</body>
+</html>
