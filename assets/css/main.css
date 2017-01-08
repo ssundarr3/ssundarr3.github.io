@@ -58,7 +58,7 @@ p{
 	border-bottom: 1px #000000 dotted;
 }
 #section2{
-	color: #733327;
+	color: #D8BD8A;
 }
 #section2 a, #section2 a:visited{
 	font-size: 1.4em;
@@ -79,11 +79,11 @@ p{
 	background: linear-gradient(#c7ad88,#d6ae7b);
 }*/
 #section3{
-	color: #6c2c20;
+	color: #6C2C20;
 	margin-bottom: 5vh;
-	background: -webkit-gradient(linear, top left, bottom left, from(#c7ad88), to(#eacda3));
-	background: -webkit-linear-gradient(#c7ad88, #eacda3);
-	background: linear-gradient(#c7ad88,#eacda3);
+	/*background: -webkit-gradient(linear, top left, bottom left, from(#111111), to(#eacda3));
+	background: -webkit-linear-gradient(#111111, #111111);
+	background: linear-gradient(#111111,#111111);*/
 }
 
 #github_link:hover, #github_link:active{
