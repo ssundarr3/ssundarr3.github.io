@@ -46,6 +46,21 @@ p{
 #section0{
 	color: #c7ad88;
 }
+
+#section0 p{
+	color: #0B0A07;
+}
+
+#section0 a, #section1 a:visited{
+	color:#FFFFFF;
+}
+#section0 a:hover{
+	color:#000000;
+	text-decoration: none;
+	border-bottom: 1px #000000 dotted;
+}
+
+
 #section1{
 	color: #000000;
 }
