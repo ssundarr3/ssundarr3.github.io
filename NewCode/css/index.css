@@ -1,0 +1,32 @@
+body{
+  margin: 0;
+  padding: 0;
+}
+
+.section{
+  height: 100vh;
+}
+
+.sectionContentContainer{
+  height: 100vh;
+  background-color: orange;
+
+  /* flex */
+  display: -webkit-flex;
+  display: flex;
+  flex-direction: row;
+}
+
+.sectionLeftContainer{
+  height: 100%;
+  width: 10%;
+}
+
+.sectionRightContainer{
+  height: 100%;
+  width: 90%;
+
+  /*overflow: hidden;*/
+  
+  display: flex;
+}

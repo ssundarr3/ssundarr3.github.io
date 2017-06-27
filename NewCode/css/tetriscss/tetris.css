@@ -1,0 +1,22 @@
+#tetris{
+  margin: 0 auto;
+  margin-top: auto;
+}
+
+.tetrisRow{
+  width: 100%;
+
+  display: -webkit-flex;
+  display:flex;
+  flex-direction: row;
+}
+
+.tetrisTile{
+  /*margin-top: auto;*/
+  height: 100%;
+  /*width: 25%;*/
+}
+
+
+
+
