@@ -9,11 +9,37 @@
 
   <div class="section">
     <div class="sectionContentContainer" style="background-color: pink;">
-      <div class="sectionLeftContainer" style="background-color: yellow;"></div>
-      <div class="sectionRightContainer" id="tetrisWrap" tabindex="1" style="background-color: blue;">
+      <div class="sectionLeftContainer" style="background-color: yellow;">
+        <form id="tetrisRowColTile">
+          Number of Rows: <input type="number" name="numRows" value="22">
+          <br> 
+          Number of Columns: <input type="number" name="numCols" value="16">
+          <br>
+          Tile side (in pixels): <input type="number" name="tileSide" value="23">
+          <br>
+          <input type="submit" value="Set row, col, tile">
+        </form>
+
+        Game Speed: <input type="number" name="" value="2" id="tetrisGameSpeed">
+        <button type="button" id="tetrisGameSpeedButton" >Set Game Speed</button>
+        <br>
+        <textarea rows="5" cols="5" name="newPiece" style="overflow:hidden;" >XXXXX</textarea>
+        <button type="button">Add New Piece</button>
+
+    </div>
+      <div class="sectionRightContainer" id="tetrisWrap" tabindex="1">
         <div id="tetris">
 
         </div>
+
+        <div id="tetrisText">
+          <p id="tetrisTextNotification">
+          </p>
+          <p id="tetrisTextLinesCleared">
+          </p>
+        </div>
+
+
       </div>
     </div>
   </div>

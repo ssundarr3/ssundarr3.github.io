@@ -1,6 +1,13 @@
+#tetrisText{
+  margin: 0 auto;
+  margin-top: auto;
+  margin-left: 1px;
+}
+
 #tetris{
   margin: 0 auto;
   margin-top: auto;
+  margin-right: 1px;
 }
 
 .tetrisRow{

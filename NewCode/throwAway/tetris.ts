@@ -1,25 +1,15 @@
-// (function(){
+// wrap everything in a closure so as to not disrupt other scripts
 
-// filepaths, class and id names
+// (function(){
 const picsPath: string = "../pics/tetrispics/", emptyTile:string = "X", imageExtension:string = ".png", 
 tetrisWrapDiv:string = "tetrisWrap", tetrisDiv:string = "tetris", tetrisTile:string = "tetrisTile", tetrisRow:string = "tetrisRow",
 tetrisTextDiv:string = "tetrisText";
 
-// game parameters
-let gameSpeed: number, linesCleared: number, gameScore: number, gameOver: boolean;
-
-// board parameters
 let boardImg: HTMLImageElement[][], boardValues: string[][];
 let numCols: number, numRows: number, tileSide: number;
-
-// ai parameters
-let coefficients: number[], autopilot: boolean;
-
-// piece parameters, piece class and related functions
 let pieces: string[][][][], pieceStats: number[];
-let nextPiece: number, piecePlaced: boolean;
+let gameSpeed: number, linesCleared: number, gameScore: number = 0;
 
-let curPiece: Piece;
 class Piece{
     let: number; // letter
     row: number;
@@ -38,21 +28,95 @@ function copyPiece(copyFrom:Piece, copyTo:Piece){
     copyTo.rot = copyFrom.rot;
 }
 
-// 
-// SET ONCE FUNCTIONS 
-//
+let gameOver:boolean;
 
-function setCoefficients(): void{
-    coefficients = [];
-    coefficients.push(-0.192716);
-    coefficients.push(-1);
-    coefficients.push(0.00742194);
-    coefficients.push(0.292781);
-    coefficients.push(0.182602);
-    coefficients.push(0.175692);
-    coefficients.push(-0.0439177);
+let nextPiece: number, piecePlaced: boolean;
+let curPiece: Piece;
+let coefficients: number[], autopilot: boolean;
+
+let animate: (callback: FrameRequestCallback) => number, animationFrame: number;
+
+
+function setKeyPressListeners(): void{
+    let tetrisWrapDivElement: HTMLElement | null = document.getElementById(tetrisWrapDiv);
+    if(!tetrisWrapDivElement) return;
+
+    tetrisWrapDivElement.addEventListener("keydown", function(event) {
+        let value: number = Number(event.keyCode);
+
+
+
+        if(value === 37 || value === 38 || value === 39 || value === 40 || value === 32)
+            event.preventDefault();
+        else return;
+        
+        if(gameOver){
+            setGameboard();
+            animate(step);
+            return;
+        }
+
+        autopilot = false;
+        gameSpeed = 1;
+
+        // left, right, up, down, space
+        if(value === 37) moveLeft(boardValues, curPiece, true); 
+        else if(value === 39) moveRight(boardValues, curPiece, true);
+        else if(value === 38) moveClockwise(boardValues, curPiece, true);
+        else if(value === 40 && makeNextDefaultMove(boardValues, curPiece, true)){}
+        else if(value === 32){
+            if(!moveBottom(boardValues, curPiece, true)){
+                gameOver = true;
+            }
+        }
+    });
 }
 
+function checkTwoPieceSame(pieceOne: string[][], pieceTwo: string[][]): boolean{
+    if(pieceOne.length === 0 || pieceTwo.length === 0 || pieceOne.length !== pieceTwo.length || 
+        pieceOne[0].length === 0 || pieceTwo[0].length === 0 || pieceOne[0].length !== pieceTwo[0].length){
+        return false;
+    }
+
+    for(let i:number = 0; i<pieceOne.length; ++i){
+        for(let j:number = 0; j<pieceOne[i].length; ++j){
+            if(pieceOne[i][j] !== pieceTwo[i][j]) return false;
+        }
+    }
+
+    return true;
+}
+
+function setRotatedPiece(whichPiece: number): void{
+    let pieceToRotate: string[][] = pieces[whichPiece][0], rotatedPiece: string[][]= [];
+    while(1){
+        for(let j:number = 0; j<pieceToRotate[0].length; ++j){
+            rotatedPiece.push([]);
+            for(let i:number = pieceToRotate.length-1; i>=0; --i){
+                rotatedPiece[j].push(pieceToRotate[i][j]);
+            }
+        }
+        if(checkTwoPieceSame(rotatedPiece, pieces[whichPiece][0])) break;
+        pieces[whichPiece].push(rotatedPiece);
+        pieceToRotate = rotatedPiece;
+        rotatedPiece = [];
+    }
+}
+
+// adds a new piece. changes only pieces, and pieceStats
+function setNewPiece(): void{
+    // set new piece if it's okay
+    // should not already be present
+    // should be at most 5x5
+    // remove extra rows of zeroes
+    // all rows should have same number of items
+    // etc etc.
+    //set PieceId
+
+    // pieceStats.push(0);
+}
+
+// sets all original pieces. changes only pieces and pieceStats.
 function setOriginalPieces(): void{
     pieces = [];
 
@@ -138,7 +202,7 @@ function setOriginalPieces(): void{
             pieceAndNumDiv.appendChild(pieceDiv);
             let numberDiv = document.createElement("div");
             numberDiv.className = "tetrisNumber";
-            numberDiv.id = "tetris" + i + "number";
+
             numberDiv.innerHTML = "123";
 
             pieceAndNumDiv.appendChild(numberDiv);
@@ -151,107 +215,12 @@ function setOriginalPieces(): void{
 
 }
 
-function setKeyPressListeners(): void{
-    let tetrisWrapDivElement: HTMLElement | null = document.getElementById(tetrisWrapDiv);
-    if(!tetrisWrapDivElement) return;
-
-    tetrisWrapDivElement.addEventListener("keydown", function(event) {
-        let value: number = Number(event.keyCode);
-
-
-
-        if(value === 37 || value === 38 || value === 39 || value === 40 || value === 32)
-            event.preventDefault();
-        else return;
-        
-        if(gameOver){
-            setGameboard();
-            animate(step);
-            return;
-        }
-
-        autopilot = false;
-        gameSpeed = 1;
-
-        // left, right, up, down, space
-        if(value === 37) moveLeft(boardValues, curPiece, true); 
-        else if(value === 39) moveRight(boardValues, curPiece, true);
-        else if(value === 38) moveClockwise(boardValues, curPiece, true);
-        else if(value === 40 && makeNextDefaultMove(boardValues, curPiece, true)){}
-        else if(value === 32){
-            if(!moveBottom(boardValues, curPiece, true)){
-                gameOver = true;
-            }
-        }
-    });
-}
-
-// 
-// SET MANY TIMES FUNCTIONS
-//
-
-function setCurVariables(): void{
-    curPiece.row = -1;
-    curPiece.col = numCols/2 -1;
-    curPiece.rot = 0;
-    curPiece.let = nextPiece;
-    pieceStats[curPiece.let] += 1;
-    let numberDiv = document.getElementById("tetris" + curPiece.let + "number");
-    if(numberDiv) numberDiv.innerHTML = pieceStats[curPiece.let] + "";
-    nextPiece = randomPiece();
-    piecePlaced = false;
-
-    if(autopilot) setBestRotationAndCol();
-}
-
-let bagOfPieces: number[] = [];
-function randomPiece(): number{
-    if(bagOfPieces.length <= 1){
-        const numberOfEachPiece = 5;
-        for(let i: number = 0; i<pieces.length; ++i){
-            for(let j:number = 0; j<numberOfEachPiece; ++j){
-                bagOfPieces.push(i);
-            }
-        }
-
-        // shuffle array
-        for(let k:number = 0; k<bagOfPieces.length; ++k){
-            let min = k, max = bagOfPieces.length-1;
-            let swapIndex: number = Math.floor(Math.random() * (max - min + 1)) + min;
-            let tmp:number = bagOfPieces[swapIndex];
-            bagOfPieces[swapIndex] = bagOfPieces[k];
-            bagOfPieces[k] = tmp;
-        }
-    }
-
-    let x: number | undefined = bagOfPieces.pop();
-    return x ? x : 0;
-}
-
-// 
-// SET FROM USER FUNCTIONS
-//
-
-function setAutopilot(): void{
-    autopilot = true;
-}
-
+// sets only gamespeed
 function setGamespeed(): void{
-    gameSpeed = 2;
+    gameSpeed = 60;
 }
 
-function setNewPiece(): void{
-    // set new piece if it's okay
-    // should not already be present
-    // should be at most 5x5
-    // remove extra rows of zeroes
-    // all rows should have same number of items
-    // etc etc.
-    //set PieceId
-
-    // pieceStats.push(0);
-}
-
+// sets board, boardImg
 function setBoardAndBoardImg(gameDiv: HTMLElement): void{
     let tileSidePx: string = tileSide + "px";
     for(let i:number = 0; i<numRows; ++i){
@@ -277,14 +246,9 @@ function setBoardAndBoardImg(gameDiv: HTMLElement): void{
     }
 }
 
+// sets numRows, numCols, tileSide, gameOver, linesCleared, nextPiece, pieceStats, boardImg, boardValues
+// pieceStats added here as well, because user may change board's row/col => pieceStats must be cleared
 function setGameboard(): void{
-    let textP: HTMLElement | null = document.getElementById("tetrisTextNotification");
-    if(textP) textP.innerHTML = "";
-
-    let linesRemovedP = document.getElementById("tetrisTextLinesCleared")
-    if(linesRemovedP) linesRemovedP.innerHTML = "Lines: " + "0";
-
-
     numCols = 8;
     numRows = 12;
     tileSide = 23;
@@ -294,11 +258,8 @@ function setGameboard(): void{
     nextPiece = randomPiece();
 
     pieceStats = [];
-    if(pieces) for(let i:number = 0; i<pieces.length; ++i){
-        pieceStats.push(0);
-        let numberDiv = document.getElementById("tetris" + i + "number");
-        if(numberDiv) numberDiv.innerHTML = "0";
-    }
+    if(pieces) for(let i:number = 0; i<pieces.length; ++i) pieceStats.push(0);
+
     boardImg = [];
     boardValues = [];
     // setting boardImg and boardValues
@@ -321,41 +282,160 @@ function setGameboard(): void{
     // check something... forgot for now
 }
 
-//
-// MANIPULATE PIECE FUNCTIONS
-//
+function setCoefficients(): void{
+    coefficients = [];
+    coefficients.push(-0.192716);
+    coefficients.push(-1);
+    coefficients.push(0.00742194);
+    coefficients.push(0.292781);
+    coefficients.push(0.182602);
+    coefficients.push(0.175692);
+    coefficients.push(-0.0439177);
+}
 
-function checkTwoPieceSame(pieceOne: string[][], pieceTwo: string[][]): boolean{
-    if(pieceOne.length === 0 || pieceTwo.length === 0 || pieceOne.length !== pieceTwo.length || 
-        pieceOne[0].length === 0 || pieceTwo[0].length === 0 || pieceOne[0].length !== pieceTwo[0].length){
-        return false;
+function setAutopilot(): void{
+    autopilot = true;
+}
+
+function setCurVariables(): void{
+    curPiece.row = -1;
+    curPiece.col = numCols/2 -1;
+    curPiece.rot = 0;
+    curPiece.let = nextPiece;
+    pieceStats[curPiece.let] += 1;
+
+    nextPiece = randomPiece();
+    piecePlaced = false;
+
+    if(autopilot) setBestRotationAndCol();
+}
+
+
+let bagOfPieces: number[] = [];
+function randomPiece(): number{
+    if(bagOfPieces.length <= 1){
+        const numberOfEachPiece = 16;
+        for(let i: number = 0; i<pieces.length; ++i){
+            for(let j:number = 0; j<numberOfEachPiece; ++j){
+                bagOfPieces.push(i);
+            }
+        }
+
+        // shuffle array
+        for(let k:number = 0; k<bagOfPieces.length; ++k){
+            let min = k, max = bagOfPieces.length-1;
+            let swapIndex: number = Math.floor(Math.random() * (max - min + 1)) + min;
+            let tmp:number = bagOfPieces[swapIndex];
+            bagOfPieces[swapIndex] = bagOfPieces[k];
+            bagOfPieces[k] = tmp;
+        }
     }
 
-    for(let i:number = 0; i<pieceOne.length; ++i){
-        for(let j:number = 0; j<pieceOne[i].length; ++j){
-            if(pieceOne[i][j] !== pieceTwo[i][j]) return false;
+    let x: number | undefined = bagOfPieces.pop();
+    return x ? x : 0;
+
+    // return Math.floor((Math.random() * (pieces.length)));
+}
+
+// sets the animate callback and the current animationFrame
+function setAnimation(): void{
+    animate = window.requestAnimationFrame || window.webkitRequestAnimationFrame || function(callback) { return window.setTimeout(callback, 1000/60); };
+    animationFrame = 0;
+}
+
+function withinBounds(numberToCheck: number, maxRange: number): boolean{
+    return (numberToCheck >=0 && numberToCheck < maxRange); 
+}
+
+// checks if piece can be places at row, col. and places it there if it can
+function placePiece(board: string[][], pieceDrop: Piece, applyToRealBoard: boolean): boolean{
+    let pieceToDrop: string[][] = pieces[pieceDrop.let][pieceDrop.rot];
+    
+    if(!withinBounds(pieceDrop.row, board.length - pieceToDrop.length+1) ||
+    !withinBounds(pieceDrop.col, board[0].length - pieceToDrop[0].length+1)) return false;
+    
+    for(let i=0; i<pieceToDrop.length; ++i){
+        for(let j=0; j<pieceToDrop[i].length; ++j){
+            if(pieceToDrop[i][j] !== emptyTile && board[pieceDrop.row + i][pieceDrop.col + j] !== emptyTile) return false;
+        }
+    }
+
+    for(let i=0; i<pieceToDrop.length; ++i){
+        for(let j=0; j<pieceToDrop[i].length; ++j){
+            if(pieceToDrop[i][j] !== emptyTile){
+                board[pieceDrop.row + i][pieceDrop.col + j] = pieceToDrop[i][j];
+                if(applyToRealBoard) boardImg[pieceDrop.row + i][pieceDrop.col + j].src = picsPath + pieceToDrop[i][j] + imageExtension;
+            }
         }
     }
 
     return true;
 }
 
-function setRotatedPiece(whichPiece: number): void{
-    let pieceToRotate: string[][] = pieces[whichPiece][0], rotatedPiece: string[][]= [];
-    while(1){
-        for(let j:number = 0; j<pieceToRotate[0].length; ++j){
-            rotatedPiece.push([]);
-            for(let i:number = pieceToRotate.length-1; i>=0; --i){
-                rotatedPiece[j].push(pieceToRotate[i][j]);
+// removes piece at row, col
+function erasePiece(board: string[][], pieceErase: Piece, applyToRealBoard: boolean): void{
+    let pieceToErase: string[][] = pieces[pieceErase.let][pieceErase.rot];
+    
+    if(!withinBounds(pieceErase.row, board.length - pieceToErase.length+1) || 
+        !withinBounds(pieceErase.col, board[0].length - pieceToErase[0].length+1)) return;
+    
+    for(let i=0; i<pieceToErase.length; ++i){
+        for(let j=0; j<pieceToErase[i].length; ++j){
+            if(pieceToErase[i][j] !== emptyTile){
+                board[pieceErase.row + i][pieceErase.col + j] = emptyTile;
+                if(applyToRealBoard) boardImg[pieceErase.row + i][pieceErase.col + j].src = picsPath + emptyTile + imageExtension;
             }
         }
-        if(checkTwoPieceSame(rotatedPiece, pieces[whichPiece][0])) break;
-        pieces[whichPiece].push(rotatedPiece);
-        pieceToRotate = rotatedPiece;
-        rotatedPiece = [];
     }
 }
 
+function drawUpdatedBoard(board: string[][]): void{
+    for(let i: number = 0; i<board.length; ++i){
+        for(let j: number = 0; j<board[i].length; ++j){
+            if(boardImg[i][j].src.charAt(boardImg[i][j].src.length-5) !== board[i][j]){
+                boardImg[i][j].src = picsPath + board[i][j] + imageExtension;
+            }
+        }
+    }
+}
+
+// returns the number of lines cleared
+function removeLines(board: string[][], p:Piece, applyToRealBoard: boolean): number{
+    let pieceDropped: string[][] = pieces[p.let][p.rot];
+    let numLinesCleared: number = 0;
+
+    for(let i:number = 0; i<pieceDropped.length; ++i){
+        let rowCompleted = true;
+        for(let j:number = 0; j<board[0].length; ++j){
+            if(board[i+p.row][j] === emptyTile){
+                rowCompleted = false;
+                break;
+            }
+        }
+        if(!rowCompleted) continue;
+
+        numLinesCleared += 1;
+        board.splice(p.row+i, 1);
+
+        let newRow: string[] = [];
+        for(let k:number = 0; k<board[0].length; ++k){
+            newRow.push(emptyTile);
+        }
+
+        board.splice(0, 0, newRow);
+    }
+
+    if(applyToRealBoard){
+        drawUpdatedBoard(board);
+        linesCleared += numLinesCleared;
+    }
+
+
+    return numLinesCleared;
+}
+
+// movePieceFromTo moves delta amount from original position
+// pieceToMove: string[][], fromRow: number, fromCol: number, toRow: number, toCol: number, toRot: number, applyToRealBoard: boolean): boolean{
 function movePieceFromTo(board: string[][], pieceFrom: Piece, pieceTo: Piece, applyToRealBoard: boolean): boolean{
     // erase old piece if it exists
     // let x:Piece = {row:fromRow, col:fromCol, let:curPiece.let, rot:curPiece.rot};
@@ -368,66 +448,6 @@ function movePieceFromTo(board: string[][], pieceFrom: Piece, pieceTo: Piece, ap
         return false;
     }
 }
-
-function moveRight(board: string[][], p:Piece, applyToRealBoard: boolean): boolean{
-    let newP: Piece = newPiece(p);
-    newP.col += 1;
-    if(movePieceFromTo(board, p, newP, applyToRealBoard)){
-        copyPiece(newP, p);
-        return true;
-    }
-    else return false;
-}
-
-function moveLeft(board: string[][], p:Piece, applyToRealBoard: boolean): boolean{
-    let newP: Piece = newPiece(p);
-    newP.col += -1;
-    if(movePieceFromTo(board, p, newP, applyToRealBoard)){
-        copyPiece(newP, p);
-        return true;
-    }
-    else return false;
-}
-
-function moveDown(board: string[][], p:Piece, applyToRealBoard: boolean): boolean{
-    let newP: Piece = newPiece(p);
-    newP.row += 1;
-    if(movePieceFromTo(board, p, newP, applyToRealBoard)){
-        copyPiece(newP, p);
-        return true;
-    }
-    else return false;
-}
-
-function moveClockwise(board: string[][], p:Piece, applyToRealBoard: boolean): boolean{
-    let newP: Piece = newPiece(p);
-    newP.rot += 1; 
-    newP.rot %= pieces[newP.let].length;
-    if(movePieceFromTo(board, p, newP, applyToRealBoard)){
-        copyPiece(newP, p);
-        return true;
-    }
-    else return false;
-}
-
-function moveBottom(board: string[][], p:Piece, applyToRealBoard: boolean): boolean{
-    while(moveDown(board, p, applyToRealBoard)){}
-
-    removeLines(board, p, applyToRealBoard);
-
-    setCurVariables();
-
-    if(!makeNextDefaultMove(board, p, true)){
-        return false;
-    }
-
-    animationFrame = 1;
-    return true;
-}
-
-//
-// AI FUNCTIONS
-//
 
 function movePieceToBottom(board: string[][], p: Piece): boolean{
     if(!placePiece(board, p, false)) return false;
@@ -550,99 +570,62 @@ function setBestRotationAndCol(): void{
     curPiece.col = bestCol;
 }
 
-//
-// MANIPULATE BOARD FUNCTIONS
-//
+function moveRight(board: string[][], p:Piece, applyToRealBoard: boolean): boolean{
+    let newP: Piece = newPiece(p);
+    newP.col += 1;
+    if(movePieceFromTo(board, p, newP, applyToRealBoard)){
+        copyPiece(newP, p);
+        return true;
+    }
+    else return false;
+}
 
-function placePiece(board: string[][], pieceDrop: Piece, applyToRealBoard: boolean): boolean{
-    let pieceToDrop: string[][] = pieces[pieceDrop.let][pieceDrop.rot];
-    
-    if(!withinBounds(pieceDrop.row, board.length - pieceToDrop.length+1) ||
-    !withinBounds(pieceDrop.col, board[0].length - pieceToDrop[0].length+1)) return false;
-    
-    for(let i=0; i<pieceToDrop.length; ++i){
-        for(let j=0; j<pieceToDrop[i].length; ++j){
-            if(pieceToDrop[i][j] !== emptyTile && board[pieceDrop.row + i][pieceDrop.col + j] !== emptyTile) return false;
-        }
+function moveLeft(board: string[][], p:Piece, applyToRealBoard: boolean): boolean{
+    let newP: Piece = newPiece(p);
+    newP.col += -1;
+    if(movePieceFromTo(board, p, newP, applyToRealBoard)){
+        copyPiece(newP, p);
+        return true;
+    }
+    else return false;
+}
+
+function moveDown(board: string[][], p:Piece, applyToRealBoard: boolean): boolean{
+    let newP: Piece = newPiece(p);
+    newP.row += 1;
+    if(movePieceFromTo(board, p, newP, applyToRealBoard)){
+        copyPiece(newP, p);
+        return true;
+    }
+    else return false;
+}
+
+function moveClockwise(board: string[][], p:Piece, applyToRealBoard: boolean): boolean{
+    let newP: Piece = newPiece(p);
+    newP.rot += 1; 
+    newP.rot %= pieces[newP.let].length;
+    if(movePieceFromTo(board, p, newP, applyToRealBoard)){
+        copyPiece(newP, p);
+        return true;
+    }
+    else return false;
+}
+
+function moveBottom(board: string[][], p:Piece, applyToRealBoard: boolean): boolean{
+    while(moveDown(board, p, applyToRealBoard)){}
+
+    removeLines(board, p, applyToRealBoard);
+
+    setCurVariables();
+
+    if(!makeNextDefaultMove(board, p, true)){
+        return false;
     }
 
-    for(let i=0; i<pieceToDrop.length; ++i){
-        for(let j=0; j<pieceToDrop[i].length; ++j){
-            if(pieceToDrop[i][j] !== emptyTile){
-                board[pieceDrop.row + i][pieceDrop.col + j] = pieceToDrop[i][j];
-                if(applyToRealBoard) boardImg[pieceDrop.row + i][pieceDrop.col + j].src = picsPath + pieceToDrop[i][j] + imageExtension;
-            }
-        }
-    }
-
+    animationFrame = 1;
     return true;
 }
 
-function erasePiece(board: string[][], pieceErase: Piece, applyToRealBoard: boolean): void{
-    let pieceToErase: string[][] = pieces[pieceErase.let][pieceErase.rot];
-    
-    if(!withinBounds(pieceErase.row, board.length - pieceToErase.length+1) || 
-        !withinBounds(pieceErase.col, board[0].length - pieceToErase[0].length+1)) return;
-    
-    for(let i=0; i<pieceToErase.length; ++i){
-        for(let j=0; j<pieceToErase[i].length; ++j){
-            if(pieceToErase[i][j] !== emptyTile){
-                board[pieceErase.row + i][pieceErase.col + j] = emptyTile;
-                if(applyToRealBoard) boardImg[pieceErase.row + i][pieceErase.col + j].src = picsPath + emptyTile + imageExtension;
-            }
-        }
-    }
-}
-
-function withinBounds(numberToCheck: number, maxRange: number): boolean{
-    return (numberToCheck >=0 && numberToCheck < maxRange); 
-}
-
-function drawUpdatedBoard(board: string[][]): void{
-    for(let i: number = 0; i<board.length; ++i){
-        for(let j: number = 0; j<board[i].length; ++j){
-            if(boardImg[i][j].src.charAt(boardImg[i][j].src.length-5) !== board[i][j]){
-                boardImg[i][j].src = picsPath + board[i][j] + imageExtension;
-            }
-        }
-    }
-}
-
-function removeLines(board: string[][], p:Piece, applyToRealBoard: boolean): number{
-    let pieceDropped: string[][] = pieces[p.let][p.rot];
-    let numLinesCleared: number = 0;
-
-    for(let i:number = 0; i<pieceDropped.length; ++i){
-        let rowCompleted = true;
-        for(let j:number = 0; j<board[0].length; ++j){
-            if(board[i+p.row][j] === emptyTile){
-                rowCompleted = false;
-                break;
-            }
-        }
-        if(!rowCompleted) continue;
-
-        numLinesCleared += 1;
-        board.splice(p.row+i, 1);
-
-        let newRow: string[] = [];
-        for(let k:number = 0; k<board[0].length; ++k){
-            newRow.push(emptyTile);
-        }
-
-        board.splice(0, 0, newRow);
-    }
-
-    if(applyToRealBoard){
-        drawUpdatedBoard(board);
-        linesCleared += numLinesCleared;
-        let linesRemovedP = document.getElementById("tetrisTextLinesCleared")
-        if(linesRemovedP) linesRemovedP.innerHTML = "Lines: " + linesCleared;
-    }
-
-
-    return numLinesCleared;
-}
 
 function makeNextDefaultMove(board: string[][], p:Piece, applyToRealBoard:boolean): boolean{
     if(piecePlaced){
@@ -664,9 +647,6 @@ function makeNextDefaultMove(board: string[][], p:Piece, applyToRealBoard:boolea
 }
 
 function drawLastPiece(): void{
-    let textP: HTMLElement | null = document.getElementById("tetrisTextNotification");
-    if(textP) textP.innerHTML = "Game Over! <br>Press Space to restart";
-
     curPiece.row = 0;
     for(let i=0; i<pieces[curPiece.let][curPiece.rot].length; ++i){
         for(let j=0; j<pieces[curPiece.let][curPiece.rot][i].length; ++j){
@@ -681,15 +661,6 @@ function drawLastPiece(): void{
     drawUpdatedBoard(boardValues);
 }
 
-//
-// MAIN AND ANIMATE FUNCTIONS
-//
-let animate: (callback: FrameRequestCallback) => number, animationFrame: number;
-
-function setAnimation(): void{
-    animate = window.requestAnimationFrame || window.webkitRequestAnimationFrame || function(callback) { return window.setTimeout(callback, 1000/60); };
-    animationFrame = 0;
-}
 
 function step(): void{
     if(animationFrame >= 60) animationFrame = 0;
@@ -715,7 +686,7 @@ function step(): void{
     animate(step);
 }
 
-
+// calls all setters and the animate callback
 function main(): void{
     // Not dependent on anything
     setOriginalPieces();
@@ -734,11 +705,6 @@ function main(): void{
     animate(step);
 }
 
-
-
 main();
 
 // }());
-
-
-
