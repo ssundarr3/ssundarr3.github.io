@@ -1,0 +1,53 @@
+body{
+  margin: 0;
+  padding: 0;
+}
+
+.section{
+  height: 100vh;
+}
+
+.sectionContentContainer{
+  height: 100vh;
+  background-color: orange;
+
+  /* flex */
+  display: -webkit-flex;
+  display: flex;
+  flex-direction: row;
+}
+
+.sectionLeftContainer{
+  height: 100%;
+  width: 35%;
+}
+
+.sectionRightContainer{
+  height: 100%;
+  width: 65%;
+
+  /*overflow: hidden;*/
+  
+  display: flex;
+}
+
+.tetrisPieceAndNumber{
+  margin: auto auto;
+  margin-bottom: 2px;
+
+  display: -webkit-flex;
+  display: flex;
+  flex-direction: row;
+}
+
+.tetrisPiece{
+  margin: auto auto;
+  /*margin-left: 0;*/
+}
+
+.tetrisNumber{
+  text-align: center;
+  margin: auto auto;
+  margin-right: 0;
+  font-size: 46px;
+}

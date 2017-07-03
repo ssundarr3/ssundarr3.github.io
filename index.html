@@ -3,16 +3,14 @@
 
 <head>
 	<script type='application/javascript' src='/assets/js/fastclick.js'></script>
-	<script type='application/javascript'>
-		if ('addEventListener' in document) {
-    			document.addEventListener('DOMContentLoaded', function() {
-		    FastClick.attach(document.body);
-		  }, false);
-		}
-	</script>
+
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="./assets/css/jquery.fullPage.css" />
 	<link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
+
+  <link rel="stylesheet" type="text/css" href="assets/css/tetriscss/tetris.css" />
+  <link rel="stylesheet" type="text/css" href="assets/css/index.css" />
+
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="./assets/js/jquery.fullPage.js"></script>
@@ -22,6 +20,7 @@
 				anchors: ['home', 'about', 'projects', 'contact'],
 				sectionsColor: ['#935347', '#64706c', '#4F3130', '#DCC48E'],
 				navigation: true,
+				keyboardScrolling: false,
 				navigationPosition: 'right',
 				navigationTooltips: ['Home', 'About', 'Projects', 'Contact']
 			});
@@ -71,22 +70,46 @@
 		</div>
 
 		<div class="slide" id="slidex">
-			<h1>Machine Learning Tetris</h1>
-			<p>
-				A Genetic Algorithm that learns to play Tetris. Check out the code here:
-			</p>
-			<p>
-				<a href="https://github.com/ssundarr3/Machine-Learning-Tetris" class="fa fa-github fa-2x">
-				</a>
-			</p>
-			<p>
-				A standalone Tetris clone in C++ with many extra features.
-			</p>
-			<p>
-				<a href="https://github.com/ssundarr3/Tetris" class="fa fa-github fa-2x">
-				</a>
-			</p>
-			
+			    <div class="sectionContentContainer" style="background-color: #f8f8f2;">
+			      <div class="sectionLeftContainer" style="background-color: #656363;">
+			          Number of Rows: <input type="number" id="tetrisRowInput" value="22">
+			          <br> 
+			          Number of Columns: <input type="number" id="tetrisColInput" value="16">
+			          <br>
+			          Tile side (in pixels): <input type="number" id="tetrisTileInput" value="23">
+			          <br>
+			          <input id="tetrisRowColTileForm" type="submit" value="Set row, col, tile">
+			        <br>
+			        <br>
+
+			        Game Speed: <input type="number" name="" value="2" id="tetrisGameSpeed">
+			        <button type="button" id="tetrisGameSpeedButton" >Set Game Speed</button>
+			        <br>			        <br>
+
+			        <textarea id="tetrisAddNewPiece" rows="5" cols="4" name="newPiece" style="overflow:hidden;" >IOXX,XXLJ,ZSAO</textarea>
+			        <button type="button" id="tetrisAddNewPieceButton">Add New Piece</button>
+			        <br>			        <br>
+
+
+			        <button type="button" name="Off" id="tetrisAutoPilot">Turn Autopilot On</button>
+
+			    </div>
+			      <div class="sectionRightContainer" id="tetrisWrap" tabindex="1">
+			        <div id="tetris">
+
+			        </div>
+
+			        <div id="tetrisText">
+			          <p id="tetrisTextNotification">
+			          </p>
+			          <p id="tetrisTextLinesCleared">
+			          </p>
+			        </div>
+
+
+			      </div>
+			    </div>
+
 		</div>
 
 		<div class="slide" id="slidex">
@@ -218,5 +241,6 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript" src="assets/js/tetrisjs/tetris.js"></script>  
 </body>
 </html>
